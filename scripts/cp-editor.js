@@ -270,7 +270,7 @@ H5PEditor.CoursePresentation.prototype.appendTo = function ($wrapper) {
   var slideControls = {
     $add: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'newSlide') + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-add"></a>'),
     $clone: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'cloneSlide') + '" class="h5p-clone-slide h5p-slidecontrols-button h5p-slidecontrols-button-clone"></a>'),
-    $background: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'backgroundSlide') + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-background"></a>'),
+    $background: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'slideSettings') + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-background"></a>'),
     $sortLeft: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'sortSlide', {':dir': 'left'}) + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-sort-left"></a>'),
     $sortRight: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'sortSlide', {':dir': 'right'}) + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-sort-right"></a>'),
     $delete: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'removeSlide') + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-delete"></a>')

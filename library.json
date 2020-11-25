@@ -22,6 +22,9 @@
     },
     {
       "path": "scripts/bg-selector.js"
+    },
+    {
+      "path": "scripts/time-settings.js"
     }
   ],
   "preloadedCss": [

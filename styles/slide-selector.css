@@ -8,6 +8,15 @@
   height: calc(100% - 4.35em);
 }
 
+.h5p-time-settings {
+  display: none;
+  padding: 0.5em;
+}
+
+.h5p-time-settings.show {
+  display: block;
+}
+
 .h5p-settings-wrapper {
   position: absolute;
   top: 0;
