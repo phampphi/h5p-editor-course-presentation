@@ -177,6 +177,29 @@ H5PEditor.CoursePresentation.prototype.addElement = function (library, options) 
           elementParams.width = 50;
           elementParams.height = 64.5536;
           break;
+
+        case 'H5P.AudioRecorder':
+          elementParams.width = 50;
+          elementParams.height = 64.5536;
+          elementParams.action.params.microphoneNotSupported = false;
+          break;
+
+        case 'H5P.Dictation':
+          elementParams.width = 50;
+          elementParams.height = 64.5536;
+          elementParams.action.params.behaviour = {
+            alternateSolution: 'first',
+            autosplit: !0,
+            enableSolutionsButton: !0,
+            enableRetry: !0,
+            ignorePunctuation: !0,
+            overrideRTL: 'auto',
+            tries: Infinity,
+            triesAlternative: Infinity,
+            customTypoDisplay: !0,
+            typoFactor: '50'
+          };
+          break;
       }
     }
 
@@ -270,7 +293,7 @@ H5PEditor.CoursePresentation.prototype.appendTo = function ($wrapper) {
   var slideControls = {
     $add: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'newSlide') + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-add"></a>'),
     $clone: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'cloneSlide') + '" class="h5p-clone-slide h5p-slidecontrols-button h5p-slidecontrols-button-clone"></a>'),
-    $background: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'backgroundSlide') + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-background"></a>'),
+    $background: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'slideSettings') + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-background"></a>'),
     $sortLeft: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'sortSlide', {':dir': 'left'}) + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-sort-left"></a>'),
     $sortRight: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'sortSlide', {':dir': 'right'}) + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-sort-right"></a>'),
     $delete: H5PEditor.$('<a href="#" aria-label="' + H5PEditor.t('H5PEditor.CoursePresentation', 'removeSlide') + '" class="h5p-slidecontrols-button h5p-slidecontrols-button-delete"></a>')
@@ -491,7 +514,7 @@ H5PEditor.CoursePresentation.prototype.initializeDNB = function () {
     that.libraries = libraries;
     var buttons = [];
     for (var i = 0; i < libraries.length; i++) {
-      if (libraries[i].restricted !== true) {
+      //if (libraries[i].restricted !== true) {
         // Insert button or buttongroup
         const libraryId = libraries[i].name.split('.')[1].toLowerCase();
         if (dropdownMenus[libraryId] === undefined) {
@@ -500,7 +523,7 @@ H5PEditor.CoursePresentation.prototype.initializeDNB = function () {
         else {
           buttons.push(that.addDNBButtonGroup(libraries[i], dropdownMenus[libraryId]));
         }
-      }
+      //}
     }
 
     // Add go to slide button

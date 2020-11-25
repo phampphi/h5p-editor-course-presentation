@@ -1,7 +1,7 @@
 H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
 
   /**
-   * Create a Slide Selector with background settings
+   * Create a Slide Selector with background and time settings
    *
    * @class H5PEditor.CoursePresentation.SlideSelector
    * @extends H5P.EventDispatcher Enables pub/sub
@@ -23,6 +23,9 @@ H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
     // Keep track of single slides
     var singleSlides = [];
 
+    // Keep track of slide's time settings
+    var timeSettingSlides = [];
+
     // Keep track of the global background selector
     var globalBackground;
 
@@ -32,7 +35,7 @@ H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
     // DOM elements
     var $popup = $('<div class="h5p-background-selector">');
     var $title = $('<div class="h5p-background-selector-title">')
-      .html(H5PEditor.t('H5PEditor.CoursePresentation', 'slideBackground', {}))
+      .html(H5PEditor.t('H5PEditor.CoursePresentation', 'slideSettings', {}))
       .appendTo($popup);
     $('<div>', {
       class: 'h5p-background-selector-close',
@@ -42,7 +45,7 @@ H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
         cpEditor.slideControls.$background.click();
       },
       keydown: function (e) {
-        if (e.which ===32) {
+        if (e.which === 32) {
           $(this).click();
           e.preventDefault();
         }
@@ -51,10 +54,11 @@ H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
     var $header = $('<div>').appendTo($popup);
     var $contentWrapper = $('<div class="h5p-background-selector-content-wrapper">').appendTo($popup);
     var $globalContent;
-    var $slideContent;
+    var $slideContent, $timeSettingsContent;
 
     // Single slide semantic fields
     var singleSlideFields = H5PEditor.CoursePresentation.findField('slideBackgroundSelector', slideFields.field.fields);
+    var slideTimeSettingsFields = H5PEditor.CoursePresentation.findField('slideTime', slideFields.field.fields);
 
     /**
      * Init background selectors
@@ -65,24 +69,31 @@ H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
       // Global bg selector
       var templateString = H5PEditor.t('H5PEditor.CoursePresentation', 'template');
       var currentSlideString = H5PEditor.t('H5PEditor.CoursePresentation', 'currentSlide');
+      var timeSettingsString = H5PEditor.t('H5PEditor.CoursePresentation', 'timeSettings');
       $globalContent = createSlideSelector(templateString, true);
       globalBackground = new H5PEditor.CoursePresentation.BackgroundSelector($slides.children())
-        .addBgSelector(globalFields, params, $globalContent, {isVisible: true})
-        .setDescription(H5PEditor.t('H5PEditor.CoursePresentation', 'templateDescription', {':currentSlide': currentSlideString}))
+        .addBgSelector(globalFields, params, $globalContent, { isVisible: true })
+        .setDescription(H5PEditor.t('H5PEditor.CoursePresentation', 'templateDescription', { ':currentSlide': currentSlideString }))
         .addResetButton();
 
       // Single slide bg selector
       $slideContent = createSlideSelector(currentSlideString, false);
       $slides.children().each(function (idx) {
         initSingleSlide($slideContent, idx)
-          .setDescription(H5PEditor.t('H5PEditor.CoursePresentation', 'currentSlideDescription', {':template': templateString}))
+          .setDescription(H5PEditor.t('H5PEditor.CoursePresentation', 'currentSlideDescription', { ':template': templateString }))
           .addResetButton(H5PEditor.t('H5PEditor.CoursePresentation', 'resetToTemplate'));
       });
 
+      $timeSettingsContent = createSlideSelector(timeSettingsString, false);
+      $slides.children().each(function (idx) {
+        initTimeSettings($timeSettingsContent, idx)
+        .setDescription(H5PEditor.t('H5PEditor.CoursePresentation', 'slideTimeSettingDescription'));
+      });
+
       // Select single slide if first slide has single slide options
-      if (singleSlides[0].getSettings()) {
-        changeSlideType($slideContent);
-      }
+      //if (singleSlides[0].getSettings()) {
+        changeSlideType($timeSettingsContent);
+      //}
 
       // Resize header items
       $header.children().css('width', (100 / $header.children().length) + '%');
@@ -119,7 +130,7 @@ H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
      * @param {number} idx Index of slide parameters
      */
     var sanitizeSlideParams = function (idx) {
-      var slideParams =  params.slides[idx].slideBackgroundSelector;
+      var slideParams = params.slides[idx].slideBackgroundSelector;
       if (!slideParams) {
         return;
       }
@@ -148,6 +159,11 @@ H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
         }))
         .addResetButton(H5PEditor.t('H5PEditor.CoursePresentation', 'resetToTemplate'));
 
+      $slides.children().each(function (newSlideIndex) {
+        initTimeSettings($timeSettingsContent, newSlideIndex)
+        .setDescription(H5PEditor.t('H5PEditor.CoursePresentation', 'slideTimeSettingDescription'));
+      });
+
       // Change to selected radio button
       var selectedIndex = singleSlides[newSlideIndex - 1].getSelectedIndex();
       singleSlides[newSlideIndex].setSelectedIndex(selectedIndex);
@@ -161,8 +177,12 @@ H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
      */
     var removeSlide = function (removeIndex) {
       var removed = singleSlides.splice(removeIndex, 1);
+      var removedTimeSettings = timeSettingSlides.splice(removeIndex, 1);
       removed.forEach(function (singleSlide) {
         singleSlide.removeElement();
+      });
+      removedTimeSettings.forEach(function (timeSettings) {
+        timeSettings.removeElement();
       });
     };
 
@@ -180,6 +200,11 @@ H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
         var temp = singleSlides[currentSlide + dir];
         singleSlides[currentSlide + dir] = singleSlides[currentSlide];
         singleSlides[currentSlide] = temp;
+
+        // Sort slide's time settings in direction
+        var temp = timeSettingSlides[currentSlide + dir];
+        timeSettingSlides[currentSlide + dir] = timeSettingSlides[currentSlide];
+        timeSettingSlides[currentSlide] = temp;
 
         // Swap elements
         var prev = currentSlide + (dir < 0 ? 0 : dir);
@@ -219,8 +244,23 @@ H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
       });
 
       singleSlides.splice(idx, 0, singleSlide);
+      
       return singleSlide;
     };
+    
+    /**
+     * Init time settings
+     * @private
+     */
+    var initTimeSettings = function ($wrapper, idx) {
+      let slideParams = params.slides[idx];
+      let timeSettings = new H5PEditor.CoursePresentation.TimeSettings($slides.children().eq(idx))
+      .addTimeSettings(slideTimeSettingsFields, slideParams, $wrapper, { isVisible: (idx === 0), index: idx });
+      
+      timeSettingSlides.splice(idx, 0, timeSettings);
+
+      return timeSettings;
+    }
 
     /**
      * Change to specified slide
@@ -237,6 +277,8 @@ H5PEditor.CoursePresentation.SlideSelector = (function ($, EventDispatcher) {
       // Show new slide if we changed slide
       $slideContent.children().removeClass('show');
       $slideContent.children().eq(index).addClass('show');
+      $timeSettingsContent.children().removeClass('show');
+      $timeSettingsContent.children().eq(index).addClass('show');
 
       // Show slide specific options
       var $changeToSlide = singleSlides[index].getSettings() ? $slideContent : $globalContent;

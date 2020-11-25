@@ -242,6 +242,15 @@
 .h5p-dragnbar-shape-horizontal-line-button:before {
   content: "\e91e";
 }
+.h5p-dragnbar-audiorecorder-button:before {
+  content: "\1F5E3";
+}
+.h5p-dragnbar-dictation-button:before {
+  content: "\1F58E";
+}
+.h5p-dragnbar-essay-button:before {
+  content: "\1F586";
+}
 
 .h5p-dragnbar-li-ul {
   padding: 0;
