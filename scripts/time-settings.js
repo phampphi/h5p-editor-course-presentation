@@ -71,6 +71,18 @@ H5PEditor.CoursePresentation.TimeSettings = (function ($, EventDispatcher) {
 
       return self;
     };
+
+    /**
+     * Remove background selector element, used when deleting slides.
+     *
+     * @returns {H5PEditor.CoursePresentation.BackgroundSelector}
+     */
+    self.removeElement = function () {
+      if ($timeSettings) {
+        $timeSettings.remove();
+      }
+      return self;
+    };
   }
 
   // Inheritance
