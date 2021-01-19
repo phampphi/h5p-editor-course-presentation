@@ -191,11 +191,6 @@
         "machineName": "H5P.Essay",
         "majorVersion": 1,
         "minorVersion": 2
-    },
-    {
-        "machineName": "H5P.AdvancedBlanks",
-        "majorVersion": 1,
-        "minorVersion": 0
     }
   ]
 }
